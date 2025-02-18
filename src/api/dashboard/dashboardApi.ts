@@ -2,21 +2,7 @@ import axiosPrivate from "@/helper/axiosIntance";
 import { Param } from "@/types";
 import config from "config";
 
-export const getStats = async (params: Param) => {
-  try {
-    const { data } = await axiosPrivate.get(
-      config.BASE_API + `/dashboard/stats`,
-      {
-        params,
-      }
-    );
-    console.log(data);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export const getSummary = async (params: Param) => {
+export const getDashboardSummary = async (params?: Param) => {
   try {
     const { data } = await axiosPrivate.get(
       config.BASE_API + `/dashboard/summary`,
@@ -24,8 +10,22 @@ export const getSummary = async (params: Param) => {
         params,
       }
     );
-    console.log(data);
+    return data;
   } catch (error) {
-    console.error(error);
+    console.log(error);
+  }
+};
+
+export const getDashboardStats = async (params?: Param) => {
+  try {
+    const { data } = await axiosPrivate.get(
+      config.BASE_API + `/dashboard/stats`,
+      {
+        params,
+      }
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
   }
 };

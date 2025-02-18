@@ -9,7 +9,7 @@ export const getOfferList = async (params: Param) => {
     });
     console.log(data);
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 };
 
@@ -20,6 +20,6 @@ export const createOffer = async (params: Param) => {
     });
     console.log(data);
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 };

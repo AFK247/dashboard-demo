@@ -18,7 +18,7 @@ const StatCard: React.FC<StatCardProps> = ({ stat }) => {
           {stat.value}
         </Typography>
         <Typography variant="caption" color="textSecondary">
-          {stat.change}
+          {stat.change} previous month
         </Typography>
       </CardContent>
     </StyledCard>
