@@ -13,3 +13,18 @@ export interface Row {
   type: string;
   status: string;
 }
+
+export interface UserCredentials {
+  email: string;
+  password: string;
+}
+
+export interface StatParam {
+  filter: string;
+}
+
+export interface Param {
+  filter?: string;
+  page?: number;
+  per_page?: number;
+}

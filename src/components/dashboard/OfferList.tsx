@@ -15,7 +15,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
 import SearchInput from "@/components/dashboard/SearchInput";
-import { Row } from "@/types/dashboard.type";
+import { Row } from "@/types";
 
 interface OfferListProps {}
 

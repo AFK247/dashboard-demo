@@ -22,6 +22,7 @@
     "@mui/x-date-pickers": "^7.27.0",
     "@types/luxon": "^3.4.2",
     "apexcharts": "^4.4.0",
+    "axios": "^1.7.9",
     "dayjs": "^1.11.13",
     "lodash": "^4.17.21",
     "next": "^15.0.0",

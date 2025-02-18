@@ -1,6 +1,6 @@
 import React from "react";
 import { CardContent, Typography } from "@mui/material";
-import { Stat } from "@/types/dashboard.type";
+import { Stat } from "@/types";
 import { StyledCard } from "../ui/StyledCard";
 
 interface StatCardProps {
