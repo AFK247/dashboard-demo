@@ -28,13 +28,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   );
   const [stats, setStats] = useState<Record<string, any> | null>(null);
 
-  const localToken = localStorage.getItem("token");
-
   useEffect(() => {
+    const localToken = localStorage.getItem("token");
     if (localToken) {
       setToken(localToken);
     }
-  }, [localToken]);
+  }, []);
 
   const value: AppContextProps = {
     token,

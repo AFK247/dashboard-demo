@@ -19,7 +19,7 @@ export const getDashboardSummary = async (params?: Param) => {
 export const getDashboardStats = async (params?: Param) => {
   try {
     const { data } = await axiosPrivate.get(
-      config.BASE_API + `/dashboard/stats`,
+      config.BASE_API + `/dashboard/stat`,
       {
         params,
       }

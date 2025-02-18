@@ -5,11 +5,10 @@ axiosPrivate.defaults.headers.post["Content-Type"] = "application/json";
 axiosPrivate.defaults.headers["Accept"] = "application/json";
 axiosPrivate.defaults.timeout = 60000;
 
-const token = localStorage.getItem("token");
-
 // Add a request interceptor
 axiosPrivate.interceptors.request.use(
   function (config) {
+    const token = localStorage.getItem("token");
     config.headers.Authorization = `Bearer ${token}`;
     return config;
   },

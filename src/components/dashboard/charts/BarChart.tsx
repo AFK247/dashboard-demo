@@ -1,47 +1,80 @@
+"use client";
 import React, { useEffect, useRef } from "react";
-import ApexCharts from "apexcharts";
+import dynamic from "next/dynamic";
+import { useAppContext } from "@/lib/providers/AppContext";
 
-const BarChart = () => {
-  const barChartRef = useRef(null);
+const BarChartComponent = ({
+  barChartCategory,
+  barChartSeries,
+}: {
+  barChartCategory: string[];
+  barChartSeries: { name: string; data: number[] }[];
+}) => {
+  const chartRef = useRef(null);
+  const { stats } = useAppContext();
+  const chartInstance = useRef<ApexCharts | null>(null);
 
   useEffect(() => {
-    const barChartOptions = {
-      chart: {
-        type: "bar",
-        height: 250,
-        toolbar: { show: false }, // Hide toolbar
-      },
-      xaxis: {
-        categories: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-        labels: { style: { colors: "#9aa0a6" } },
-      },
-      yaxis: { labels: { style: { colors: "#9aa0a6" } } },
-      colors: ["#3db998", "#ffc221"],
-      grid: { borderColor: "#e0e0e0" },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          columnWidth: "50%",
-          endingShape: "rounded",
+    const initChart = async () => {
+      const ApexCharts = (await import("apexcharts")).default;
+
+      const options = {
+        chart: {
+          type: "bar",
+          height: 250,
+          toolbar: { show: false },
         },
-      },
-      legend: {
-        position: "top",
-        horizontalAlign: "right",
-        labels: { colors: "#9aa0a6" },
-      },
-      series: [
-        { name: "Desktop", data: [40, 60, 30, 45, 50, 47, 85] },
-        { name: "Mobile", data: [30, 45, 40, 35, 20, 10, 15] },
-      ],
+        xaxis: {
+          categories: barChartCategory,
+          labels: { style: { colors: "#9aa0a6" } },
+        },
+        yaxis: {
+          labels: { style: { colors: "#9aa0a6" } },
+        },
+        colors: ["#3db998", "#ffc221"],
+        grid: { borderColor: "#e0e0e0" },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: "50%",
+            endingShape: "rounded",
+          },
+        },
+        legend: {
+          position: "top",
+          horizontalAlign: "right",
+          labels: { colors: "#9aa0a6" },
+        },
+        series: barChartSeries,
+      };
+
+      if (chartRef.current) {
+        // Clean up existing chart if any
+        if (chartInstance.current) {
+          chartInstance.current.destroy();
+        }
+
+        // Create and render new chart
+        chartInstance.current = new ApexCharts(chartRef.current, options);
+        chartInstance.current.render();
+      }
     };
 
-    if (barChartRef.current) {
-      new ApexCharts(barChartRef.current, barChartOptions).render();
-    }
-  }, []);
+    initChart();
 
-  return <div ref={barChartRef}></div>;
+    // Cleanup on unmount
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+    };
+  }, [stats, barChartCategory, barChartSeries]);
+
+  return <div ref={chartRef} />;
 };
 
+// Export with dynamic import and disabled SSR
+const BarChart = dynamic(() => Promise.resolve(BarChartComponent), {
+  ssr: false,
+});
 export default BarChart;
