@@ -15,6 +15,8 @@ import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import { loginUser } from "@/api/auth/authApi";
+import { useAppContext } from "@/lib/providers/AppContext";
+import { useRouter } from "next/navigation";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -59,6 +61,9 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignIn() {
+  const router = useRouter();
+  const { setToken } = useAppContext();
+
   const handleSignIn = async (event: any) => {
     event.preventDefault();
     const formData = event.target.elements;
@@ -67,13 +72,15 @@ export default function SignIn() {
     const password = formData.password.value;
 
     const payload = {
-      email: "tesdt@example.com",
+      email: "test@example.com",
       password: "password123",
     };
 
     const res = await loginUser(payload);
     if (res?.token) {
       localStorage.setItem("token", res.token);
+      setToken(res.token);
+      router.push("/");
     } else {
       alert("Invalid credentials");
     }
