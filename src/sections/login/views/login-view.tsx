@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
+import { loginUser } from "@/api/auth/authApi";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -58,8 +59,24 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignIn() {
-  const handleSignIn = () => {
-    // Handle sign in
+  const handleSignIn = async (event: any) => {
+    event.preventDefault();
+    const formData = event.target.elements;
+
+    const email = formData.email.value;
+    const password = formData.password.value;
+
+    const payload = {
+      email: "tesdt@example.com",
+      password: "password123",
+    };
+
+    const res = await loginUser(payload);
+    if (res?.token) {
+      localStorage.setItem("token", res.token);
+    } else {
+      alert("Invalid credentials");
+    }
   };
 
   return (
@@ -76,7 +93,7 @@ export default function SignIn() {
           </Typography>
           <Box
             component="form"
-            onSubmit={() => {}}
+            onSubmit={handleSignIn}
             noValidate
             sx={{
               display: "flex",
@@ -119,12 +136,7 @@ export default function SignIn() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              onClick={handleSignIn}
-            >
+            <Button type="submit" fullWidth variant="contained">
               Sign in
             </Button>
             <Link
