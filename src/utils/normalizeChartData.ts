@@ -1,4 +1,6 @@
-export const normalizeChartData = (data: any) => {
+import { ChartData } from "@/types";
+
+export const normalizeChartData = (data: ChartData) => {
   const categories = Object.keys(data?.website_visits);
   const desktopData = categories?.map(
     (day) => data?.website_visits[day]?.desktop

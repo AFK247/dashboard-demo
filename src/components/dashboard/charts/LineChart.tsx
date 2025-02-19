@@ -1,14 +1,17 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
+import { ChartSeries } from "@/types";
+
+type LineChartProps = {
+  lineChartCategory: string[];
+  lineChartSeries: ChartSeries[];
+};
 
 // Component implementation without SSR
-const LineChartComponent = ({
+const LineChartComponent: React.FC<LineChartProps> = ({
   lineChartCategory,
   lineChartSeries,
-}: {
-  lineChartCategory: string[];
-  lineChartSeries: { name: string; data: number[] }[];
 }) => {
   const chartRef = useRef(null);
   const chartInstance = useRef<ApexCharts | null>(null);

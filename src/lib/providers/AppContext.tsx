@@ -1,4 +1,5 @@
 "use client";
+import { ChartData, SummaryData } from "@/types";
 import React, {
   createContext,
   useState,
@@ -10,12 +11,10 @@ import React, {
 interface AppContextProps {
   token: string | null;
   setToken: React.Dispatch<React.SetStateAction<string | null>>;
-  summaryData: Record<string, any> | null;
-  setSummaryData: React.Dispatch<
-    React.SetStateAction<Record<string, any> | null>
-  >;
-  stats: Record<string, any> | null;
-  setStats: React.Dispatch<React.SetStateAction<Record<string, any> | null>>;
+  summaryData: SummaryData | null;
+  setSummaryData: React.Dispatch<React.SetStateAction<SummaryData | null>>;
+  stats: ChartData | null;
+  setStats: React.Dispatch<React.SetStateAction<ChartData | null>>;
 }
 
 // Create context with undefined as default and explicit typing
@@ -23,10 +22,8 @@ const AppContext = createContext<AppContextProps | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
-  const [summaryData, setSummaryData] = useState<Record<string, any> | null>(
-    null
-  );
-  const [stats, setStats] = useState<Record<string, any> | null>(null);
+  const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
+  const [stats, setStats] = useState<ChartData | null>(null);
 
   useEffect(() => {
     const localToken = localStorage.getItem("token");

@@ -1,24 +1,25 @@
 "use client";
-import React, { useEffect, useState } from "react"; // Import useState
+import React, { useEffect, useState } from "react";
 import {
   Box,
-  Grid,
   MenuItem,
   Select,
   SelectChangeEvent,
   Typography,
+  Grid2,
 } from "@mui/material";
 import StatCard from "@/components/dashboard/StatCard";
 import BarChart from "@/components/dashboard/charts/BarChart";
 import LineChart from "@/components/dashboard/charts/LineChart";
 import OfferList from "@/components/dashboard/OfferList";
-import { Stat } from "@/types";
 import { useAppContext } from "@/lib/providers/AppContext";
 import {
   getDashboardStats,
   getDashboardSummary,
 } from "@/api/dashboard/dashboardApi";
 import { normalizeChartData } from "@/utils/normalizeChartData";
+import { normalizedSummaryData } from "@/utils/normalizeSummaryData";
+import { ChartSeries, NormalizedSummaryData } from "@/types";
 
 const Dashboard = () => {
   const { summaryData, setSummaryData, stats, setStats } = useAppContext();
@@ -27,7 +28,7 @@ const Dashboard = () => {
     filter: "this-month",
   });
 
-  const apiCalls = async () => {
+  const fetchDashboardData = async () => {
     const dashboardSummary = await getDashboardSummary(query);
     setSummaryData(dashboardSummary);
 
@@ -36,53 +37,11 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    apiCalls();
+    fetchDashboardData();
   }, [query]);
 
-  let normalizedStats: Stat[] = [];
-
-  if (summaryData && summaryData.current && summaryData.previous) {
-    normalizedStats = [
-      {
-        title: "Total active users",
-        value: `${(summaryData.current.active_users / 1000).toFixed(1)}k`,
-        change: `${
-          summaryData.current.active_users >= summaryData.previous.active_users
-            ? "▲"
-            : "▼"
-        }${Math.abs(
-          ((summaryData.current.active_users -
-            summaryData.previous.active_users) /
-            summaryData.previous.active_users) *
-            100
-        ).toFixed(1)}%`,
-      },
-      {
-        title: "Total clicks",
-        value: `${(summaryData.current.clicks / 1000).toFixed(1)}k`,
-        change: `${
-          summaryData.current.clicks >= summaryData.previous.clicks ? "▲" : "▼"
-        }${Math.abs(
-          ((summaryData.current.clicks - summaryData.previous.clicks) /
-            summaryData.previous.clicks) *
-            100
-        ).toFixed(1)}%`,
-      },
-      {
-        title: "Total appearances",
-        value: `${(summaryData.current.appearance / 1000).toFixed(1)}k`,
-        change: `${
-          summaryData.current.appearance >= summaryData.previous.appearance
-            ? "▲"
-            : "▼"
-        }${Math.abs(
-          ((summaryData.current.appearance - summaryData.previous.appearance) /
-            summaryData.previous.appearance) *
-            100
-        ).toFixed(1)}%`,
-      },
-    ];
-  }
+  const normalizedSummary: NormalizedSummaryData[] =
+    normalizedSummaryData(summaryData);
 
   const changeFilter = (event: SelectChangeEvent) => {
     const newFilter = event.target.value as string;
@@ -90,9 +49,9 @@ const Dashboard = () => {
   };
 
   let barChartCategory: string[] = [];
-  let barChartSeries: { name: string; data: number[] }[] = [];
+  let barChartSeries: ChartSeries[] = [];
   let lineChartCategory: string[] = [];
-  let lineChartSeries: { name: string; data: number[] }[] = [];
+  let lineChartSeries: ChartSeries[] = [];
 
   if (stats) {
     barChartCategory = normalizeChartData(stats).barChartCategory;
@@ -100,6 +59,13 @@ const Dashboard = () => {
     lineChartCategory = normalizeChartData(stats).lineChartCategory;
     lineChartSeries = normalizeChartData(stats).lineChartSeries;
   }
+
+  const filterOptions = [
+    { value: "this-month", label: "This Month" },
+    { value: "last-month", label: "Last Month" },
+    { value: "this-week", label: "This Week" },
+    { value: "last-week", label: "Last Week" },
+  ];
 
   return (
     <Box>
@@ -114,35 +80,47 @@ const Dashboard = () => {
         <Typography variant="h5" component="h2" fontWeight="600">
           Dashboard
         </Typography>
+
         <Select size="small" defaultValue="this-month" onChange={changeFilter}>
-          <MenuItem value="this-month">This Month</MenuItem>
-          <MenuItem value="last-month">Last Month</MenuItem>
-          <MenuItem value="this-week">This Week</MenuItem>
-          <MenuItem value="last-week">Last Week</MenuItem>
+          {filterOptions.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
         </Select>
       </Box>
-      <Grid container spacing={3}>
-        {normalizedStats.map((stat, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <StatCard stat={stat} />
-          </Grid>
-        ))}
-      </Grid>
 
-      <Grid container spacing={3} mt={2}>
-        <Grid item xs={12} md={6}>
+      <Grid2
+        container
+        spacing={{ xs: 2, md: 3 }}
+        columns={{ xs: 4, sm: 8, md: 12 }}
+      >
+        {normalizedSummary?.map((stat, index) => (
+          <Grid2 key={index} size={{ xs: 2, sm: 4, md: 4 }}>
+            <StatCard stat={stat} />
+          </Grid2>
+        ))}
+      </Grid2>
+
+      <Grid2
+        container
+        spacing={{ xs: 2, md: 3 }}
+        columns={{ xs: 4, sm: 8, md: 12 }}
+        sx={{ mt: 3 }}
+      >
+        <Grid2 size={{ xs: 4, sm: 8, md: 6 }}>
           <BarChart
             barChartCategory={barChartCategory}
             barChartSeries={barChartSeries}
           />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        </Grid2>
+        <Grid2 size={{ xs: 4, sm: 8, md: 6 }}>
           <LineChart
             lineChartCategory={lineChartCategory}
             lineChartSeries={lineChartSeries}
           />
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
 
       <OfferList />
     </Box>

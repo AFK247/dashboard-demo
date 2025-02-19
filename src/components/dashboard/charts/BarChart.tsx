@@ -2,13 +2,17 @@
 import React, { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { useAppContext } from "@/lib/providers/AppContext";
+import { ChartSeries } from "@/types";
 
-const BarChartComponent = ({
+type BarChartProps = {
+  barChartCategory: string[];
+  barChartSeries: ChartSeries[];
+};
+
+// Component implementation without SSR
+const BarChartComponent: React.FC<BarChartProps> = ({
   barChartCategory,
   barChartSeries,
-}: {
-  barChartCategory: string[];
-  barChartSeries: { name: string; data: number[] }[];
 }) => {
   const chartRef = useRef(null);
   const { stats } = useAppContext();
