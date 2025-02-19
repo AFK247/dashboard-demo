@@ -1,5 +1,5 @@
 import React from "react";
-import { CardContent, Typography } from "@mui/material";
+import { Box, CardContent, Typography } from "@mui/material";
 import { StyledCard } from "../ui/StyledCard";
 import { NormalizedSummaryData } from "@/types";
 import Image from "next/image";
@@ -18,13 +18,7 @@ const SummaryCard: React.FC<StatCardProps> = ({ summary }) => {
         <Typography variant="h4" fontWeight="700" my={0.5}>
           {summary?.value}k
         </Typography>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-          display="flex"
-          alignItems="center"
-          gap={0.5}
-        >
+        <Box display="flex" alignItems="center" gap={0.5}>
           <Image
             src={summary.icon}
             alt={summary?.title}
@@ -38,8 +32,10 @@ const SummaryCard: React.FC<StatCardProps> = ({ summary }) => {
           >
             {summary?.change}%
           </Typography>
-          previous month
-        </Typography>
+          <Typography color="textSecondary" variant="body2">
+            previous month
+          </Typography>
+        </Box>
       </CardContent>
     </StyledCard>
   );

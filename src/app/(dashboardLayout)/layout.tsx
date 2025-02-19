@@ -29,7 +29,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           borderBottom: "1px solid #e0e0e0",
         }}
       >
-        <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Toolbar
+          sx={{
+            justifyContent: {
+              sm: "flex-end",
+              xs: "space-between",
+            },
+          }}
+        >
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -39,9 +46,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
-            Dashboard
-          </Typography>
           <IconButton>
             <HomeIcon />
           </IconButton>

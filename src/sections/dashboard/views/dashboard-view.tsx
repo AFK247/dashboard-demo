@@ -77,9 +77,7 @@ const Dashboard = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h5" component="h2" fontWeight="600">
-          Dashboard
-        </Typography>
+        <Typography variant="h4">Dashboard</Typography>
 
         <Select size="small" defaultValue="this-month" onChange={changeFilter}>
           {filterOptions.map((option) => (
@@ -93,10 +91,10 @@ const Dashboard = () => {
       <Grid2
         container
         spacing={{ xs: 2, md: 3 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
+        columns={{ xs: 2, sm: 8, md: 12 }}
       >
         {normalizedSummary?.map((summary, index) => (
-          <Grid2 key={index} size={{ xs: 2, sm: 4, md: 4 }}>
+          <Grid2 key={index} size={{ xs: 2, sm: 4 }}>
             <SummaryCard summary={summary} />
           </Grid2>
         ))}
@@ -106,7 +104,7 @@ const Dashboard = () => {
         container
         spacing={{ xs: 2, md: 3 }}
         columns={{ xs: 4, sm: 8, md: 12 }}
-        sx={{ mt: 3 }}
+        sx={{ mt: 5 }}
       >
         <Grid2 size={{ xs: 4, sm: 8, md: 6 }}>
           <BarChart

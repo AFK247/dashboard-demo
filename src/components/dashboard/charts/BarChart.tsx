@@ -3,6 +3,8 @@ import React, { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { useAppContext } from "@/lib/providers/AppContext";
 import { ChartSeries } from "@/types";
+import { Box, Typography } from "@mui/material";
+import { StyledCard } from "@/components/ui/StyledCard";
 
 type BarChartProps = {
   barChartCategory: string[];
@@ -25,7 +27,7 @@ const BarChartComponent: React.FC<BarChartProps> = ({
       const options = {
         chart: {
           type: "bar",
-          height: 250,
+          height: 340,
           toolbar: { show: false },
         },
         xaxis: {
@@ -35,14 +37,20 @@ const BarChartComponent: React.FC<BarChartProps> = ({
         yaxis: {
           labels: { style: { colors: "#9aa0a6" } },
         },
-        colors: ["#3db998", "#ffc221"],
+        colors: ["#007867", "#FFAB00"],
         grid: { borderColor: "#e0e0e0" },
         plotOptions: {
           bar: {
             horizontal: false,
             columnWidth: "50%",
             endingShape: "rounded",
+            dataLabels: {
+              position: "top",
+            },
           },
+        },
+        dataLabels: {
+          enabled: false,
         },
         legend: {
           position: "top",
@@ -74,7 +82,14 @@ const BarChartComponent: React.FC<BarChartProps> = ({
     };
   }, [stats, barChartCategory, barChartSeries]);
 
-  return <div ref={chartRef} />;
+  return (
+    <StyledCard sx={{ p: 1 }}>
+      <Typography variant="h6" fontWeight="600" m={2}>
+        Website Visits
+      </Typography>
+      <Box ref={chartRef} />
+    </StyledCard>
+  );
 };
 
 // Export with dynamic import and disabled SSR

@@ -2,6 +2,8 @@
 import React, { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { ChartSeries } from "@/types";
+import { Box, Typography } from "@mui/material";
+import { StyledCard } from "@/components/ui/StyledCard";
 
 type LineChartProps = {
   lineChartCategory: string[];
@@ -23,7 +25,7 @@ const LineChartComponent: React.FC<LineChartProps> = ({
       const options = {
         chart: {
           type: "line",
-          height: 250,
+          height: 340,
           toolbar: { show: false },
         },
         xaxis: {
@@ -38,7 +40,6 @@ const LineChartComponent: React.FC<LineChartProps> = ({
           curve: "smooth",
         },
         grid: { borderColor: "#e0e0e0" },
-        // series: [{ name: "Offers Sent", data: [15, 20, 65, 68, 85, 68, 50] }],
         series: lineChartSeries,
       };
 
@@ -64,7 +65,14 @@ const LineChartComponent: React.FC<LineChartProps> = ({
     };
   }, [lineChartSeries, lineChartCategory]);
 
-  return <div ref={chartRef} />;
+  return (
+    <StyledCard sx={{ p: 1 }}>
+      <Typography variant="h6" fontWeight="600" m={2}>
+        Offers Sent
+      </Typography>
+      <Box ref={chartRef} />
+    </StyledCard>
+  );
 };
 
 // Export with dynamic import and disabled SSR
