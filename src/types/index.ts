@@ -2,7 +2,7 @@ export interface NormalizedSummaryData {
   title: string;
   value: string;
   change: string;
-  upgraded: boolean;
+  icon: string;
 }
 
 export interface Row {

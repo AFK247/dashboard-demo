@@ -8,7 +8,6 @@ import {
   Typography,
   Grid2,
 } from "@mui/material";
-import StatCard from "@/components/dashboard/StatCard";
 import BarChart from "@/components/dashboard/charts/BarChart";
 import LineChart from "@/components/dashboard/charts/LineChart";
 import OfferList from "@/components/dashboard/OfferList";
@@ -20,6 +19,7 @@ import {
 import { normalizeChartData } from "@/utils/normalizeChartData";
 import { normalizedSummaryData } from "@/utils/normalizeSummaryData";
 import { ChartSeries, NormalizedSummaryData } from "@/types";
+import SummaryCard from "@/components/dashboard/SummaryCard";
 
 const Dashboard = () => {
   const { summaryData, setSummaryData, stats, setStats } = useAppContext();
@@ -95,9 +95,9 @@ const Dashboard = () => {
         spacing={{ xs: 2, md: 3 }}
         columns={{ xs: 4, sm: 8, md: 12 }}
       >
-        {normalizedSummary?.map((stat, index) => (
+        {normalizedSummary?.map((summary, index) => (
           <Grid2 key={index} size={{ xs: 2, sm: 4, md: 4 }}>
-            <StatCard stat={stat} />
+            <SummaryCard summary={summary} />
           </Grid2>
         ))}
       </Grid2>
