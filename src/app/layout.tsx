@@ -4,6 +4,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import ThemeProvider from "@/theme/index";
 import { AppProvider } from "@/lib/providers/AppContext";
+import { Toaster } from "sonner";
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
@@ -15,6 +16,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
             <AppProvider>
               {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
               <CssBaseline />
+              <Toaster position="top-right" richColors />
               {props.children}
             </AppProvider>
           </ThemeProvider>

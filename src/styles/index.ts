@@ -45,7 +45,7 @@ export const StyledSelect = styled(Select)(({ theme }) => ({
 export const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
   borderRadius: theme.spacing(2),
-  maxWidth: 600,
+  maxWidth: 720,
   margin: "0 auto",
   boxShadow: "0px 3px 5px rgba(0, 0, 0, 0.05)",
 }));

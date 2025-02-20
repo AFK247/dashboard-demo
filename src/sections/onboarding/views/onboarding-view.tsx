@@ -1,98 +1,47 @@
 "use client";
-import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  Checkbox,
-  Button,
-  FormHelperText,
-  FormControl,
-  Autocomplete,
-  CircularProgress,
-} from "@mui/material";
-import { TextField } from "@mui/material";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
-import { z } from "zod";
-import { useForm, Controller } from "react-hook-form";
+import React from "react";
+import { Box, Typography, Button } from "@mui/material";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StyledPaper } from "@/styles";
-import { getAllUser } from "@/api/users/usersApi";
-import { debounce } from "lodash";
+import { createOffer } from "@/api/offers/offerApi";
+import { AdditionSelection } from "@/components/onboarding/AdditionSelection";
+import { PlanTypeSelection } from "@/components/onboarding/PlanTypeSelection";
+import { PriceInput } from "@/components/onboarding/PriceInput";
+import { ExpiryDatePicker } from "@/components/onboarding/ExpiryDatePicker";
+import { OfferFormData } from "@/types/onboarding.types";
+import { offerSchema } from "@/schemas/offerSchema";
+import { UserAutocomplete } from "@/components/onboarding/UserAutocomplete";
 
-// valid options for plan_type are "monthly", "yearly", "pay_as_you_go"
-// valid options for additins are "refundable", "on_demand", "negotiable"'
-
-// Define validation schema using Zod
-const offerSchema = z.object({
-  planType: z.enum(["payAsYouGo", "monthly", "yearly"], {
-    required_error: "Plan type is required",
-  }),
-  refundable: z.boolean(),
-  onDemand: z.boolean(),
-  negotiable: z.boolean(),
-  user: z.string().min(1, "User is required"),
-  expiryDate: z.instanceof(dayjs as any, {
-    message: "Expiry date is required",
-  }),
-  price: z
-    .string()
-    .min(1, "Price is required")
-    .regex(/^\d+(\.\d{1,2})?$/, "Price must be a valid amount"),
-});
-
-type OfferFormData = z.infer<typeof offerSchema>;
-
-const CreateOfferForm = () => {
+const CreateOfferForm: React.FC = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
+    getValues,
+    clearErrors,
   } = useForm<OfferFormData>({
     resolver: zodResolver(offerSchema),
     defaultValues: {
-      planType: "monthly",
-      refundable: false,
-      onDemand: false,
-      negotiable: false,
-      user: "",
-      expiryDate: null,
-      price: "",
+      plan_type: "monthly",
+      additions: [],
+      user_id: "",
+      expired: null,
+      price: 0,
     },
   });
 
-  const onSubmit = (data: OfferFormData) => {
-    console.log("Form data submitted:", data);
-    // Here you would send the data to your API
+  // Submit handler
+  const onSubmit = async (data: OfferFormData) => {
+    const transformedData = {
+      ...data,
+      user_id: parseInt(data.user_id),
+      expired: data.expired?.format("YYYY-MM-DD"),
+    };
+
+    await createOffer(transformedData);
   };
-
-  const [users, setUsers] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  // Function to fetch users with debounce
-  const fetchUsers = debounce(async (query: string) => {
-    if (query.trim().length > 0) {
-      // Ensure API calls even on the first input
-      setLoading(true);
-      try {
-        const data = await getAllUser();
-        const allNames = data?.data.map((user: { name: string }) => user.name);
-        setUsers(allNames.length ? allNames : ["No Result Found"]);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        setUsers(["No Result Found"]);
-      }
-      setLoading(false);
-    } else {
-      setUsers([]); // Clear suggestions when input is empty
-    }
-  }, 500);
 
   return (
     <StyledPaper>
@@ -100,188 +49,36 @@ const CreateOfferForm = () => {
         <Typography variant="h6" component="h2" gutterBottom>
           Create Offer
         </Typography>
+
         <Typography variant="body2" color="textSecondary" gutterBottom>
           Send onboarding offer to new user
         </Typography>
 
-        <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }} />
+        <Box sx={{ borderBottom: 1, borderColor: "divider", my: 2 }} />
 
-        <Typography variant="subtitle2" mt={3} mb={1}>
-          Plan Type
-        </Typography>
-        <Controller
-          name="planType"
+        <PlanTypeSelection control={control} label="Plan Type" />
+
+        <AdditionSelection control={control} label="Additions" />
+
+        <UserAutocomplete
           control={control}
-          render={({ field }) => (
-            <RadioGroup {...field} row>
-              <FormControlLabel
-                value="payAsYouGo"
-                control={<Radio size="small" />}
-                label="Pay As You Go"
-              />
-              <FormControlLabel
-                value="monthly"
-                control={<Radio size="small" />}
-                label="Monthly"
-              />
-              <FormControlLabel
-                value="yearly"
-                control={<Radio size="small" />}
-                label="Yearly"
-              />
-            </RadioGroup>
-          )}
-        />
-        {errors.planType && (
-          <FormHelperText error>{errors.planType.message}</FormHelperText>
-        )}
-
-        <Typography variant="subtitle2" mt={3} mb={1}>
-          Additions
-        </Typography>
-        <Box display="flex" gap={2}>
-          <Controller
-            name="refundable"
-            control={control}
-            render={({ field }) => (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    size="small"
-                    checked={field.value}
-                    onChange={(e) => field.onChange(e.target.checked)}
-                  />
-                }
-                label="Refundable"
-              />
-            )}
-          />
-          <Controller
-            name="onDemand"
-            control={control}
-            render={({ field }) => (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    size="small"
-                    checked={field.value}
-                    onChange={(e) => field.onChange(e.target.checked)}
-                  />
-                }
-                label="On demand"
-              />
-            )}
-          />
-          <Controller
-            name="negotiable"
-            control={control}
-            render={({ field }) => (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    size="small"
-                    checked={field.value}
-                    onChange={(e) => field.onChange(e.target.checked)}
-                  />
-                }
-                label="Negotiable"
-              />
-            )}
-          />
-        </Box>
-
-        <Typography variant="subtitle2" mt={3} mb={1}>
-          User
-        </Typography>
-        <Controller
-          name="user"
-          control={control}
-          render={({ field }) => (
-            <Autocomplete
-              {...field}
-              freeSolo
-              options={users}
-              loading={loading}
-              onInputChange={(_, value) => {
-                fetchUsers(value);
-              }}
-              getOptionLabel={(option) => option}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  size="small"
-                  placeholder="Select User"
-                  error={!!errors.user}
-                  helperText={errors.user?.message}
-                  InputProps={{
-                    ...params.InputProps,
-                    endAdornment: <>{params.InputProps.endAdornment}</>,
-                  }}
-                />
-              )}
-              onChange={(_, value) => field.onChange(value)}
-            />
-          )}
+          label="User"
+          errors={errors}
+          setValue={setValue}
+          getValues={getValues}
+          clearErrors={clearErrors}
         />
 
-        <Typography variant="subtitle2" mt={3} mb={1}>
-          Expired
-        </Typography>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Controller
-            name="expiryDate"
-            control={control}
-            render={({ field }) => (
-              <FormControl fullWidth error={!!errors.expiryDate}>
-                <DatePicker
-                  value={field.value}
-                  onChange={(date) => field.onChange(date)}
-                  slotProps={{
-                    textField: {
-                      size: "small",
-                      fullWidth: true,
-                      placeholder: "Date",
-                      variant: "outlined",
-                      error: !!errors.expiryDate,
-                      helperText: errors.expiryDate?.message?.toString(),
-                    },
-                  }}
-                />
-              </FormControl>
-            )}
-          />
-        </LocalizationProvider>
+        <ExpiryDatePicker control={control} label="Expired" errors={errors} />
 
-        <Typography variant="subtitle2" mt={3} mb={1}>
-          Price
-        </Typography>
-        <Controller
-          name="price"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              type="number"
-              variant="outlined"
-              size="small"
-              fullWidth
-              placeholder="Price"
-              error={!!errors.price}
-              helperText={errors.price?.message}
-              InputProps={{
-                startAdornment: <AttachMoneyIcon color="action" />,
-              }}
-            />
-          )}
-        />
+        <PriceInput control={control} label="Price" errors={errors} />
 
         <Button
           type="submit"
           variant="contained"
           color="primary"
           size="large"
-          sx={{ mt: 4, display: "block", ml: "auto" }}
+          sx={{ mt: 5, display: "block", ml: "auto", backgroundColor: "black" }}
         >
           Send Offer
         </Button>
