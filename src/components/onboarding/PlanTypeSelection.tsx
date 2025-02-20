@@ -27,7 +27,7 @@ export const PlanTypeSelection: React.FC<OfferCommonProps> = ({
         name="plan_type"
         control={control}
         render={({ field }) => (
-          <RadioGroup {...field} row>
+          <RadioGroup {...field} row sx={{ display: "flex", flexWrap: "wrap" }}>
             {planTypes.map((plan) => (
               <FormControlLabel
                 key={plan.value}

@@ -19,7 +19,7 @@ export const AdditionSelection: React.FC<OfferCommonProps> = ({
       <Typography variant="subtitle2" mt={2} mb={1}>
         {label}
       </Typography>
-      <Box display="flex" gap={2}>
+      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
         {additionOptions.map((option) => (
           <Controller
             key={option.value}
