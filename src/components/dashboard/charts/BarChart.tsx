@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { useAppContext } from "@/lib/providers/AppContext";
-import { ChartSeries } from "@/types";
+import { ChartSeries } from "@/types/dashboard.types";
 import { Box, Typography } from "@mui/material";
 import { StyledCard } from "@/components/ui/StyledCard";
 

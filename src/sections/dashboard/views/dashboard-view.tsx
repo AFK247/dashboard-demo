@@ -18,7 +18,7 @@ import {
 } from "@/api/dashboard/dashboardApi";
 import { normalizeChartData } from "@/utils/normalizeChartData";
 import { normalizedSummaryData } from "@/utils/normalizeSummaryData";
-import { ChartSeries, NormalizedSummaryData } from "@/types";
+import { ChartSeries, NormalizedSummaryData } from "@/types/dashboard.types";
 import SummaryCard from "@/components/dashboard/SummaryCard";
 
 const Dashboard = () => {

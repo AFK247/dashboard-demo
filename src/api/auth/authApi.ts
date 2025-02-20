@@ -1,4 +1,4 @@
-import { UserCredentials } from "@/types";
+import { UserCredentials } from "@/types/dashboard.types";
 import axios from "axios";
 import config from "config";
 

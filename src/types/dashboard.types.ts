@@ -7,12 +7,13 @@ export interface NormalizedSummaryData {
 
 export interface Row {
   id: number;
-  name: string;
+  user_name: string;
   phone: string;
   company: string;
-  job: string;
+  jobTitle: string;
   type: string;
   status: string;
+  email: string;
 }
 
 export interface UserCredentials {
@@ -69,4 +70,16 @@ export interface NormalizedChartData {
   barChartSeries: ChartSeries[];
   lineChartCategory: string[];
   lineChartSeries: ChartSeries[];
+}
+
+export interface OfferData {
+  id: number;
+  user_name: string;
+  email: string;
+  phone: string;
+  company: string;
+  jobTitle: string;
+  status: string;
+  type: string;
+  price: number;
 }

@@ -1,5 +1,5 @@
 import axiosPrivate from "@/helper/axiosIntance";
-import { Param } from "@/types";
+import { Param } from "@/types/dashboard.types";
 import { TCreateOffer } from "@/types/onboarding.types";
 import config from "config";
 import { toast } from "sonner";
@@ -9,7 +9,7 @@ export const getOfferList = async (params: Param) => {
     const { data } = await axiosPrivate.get(config.BASE_API + `/offers`, {
       params,
     });
-    console.log(data);
+    return data;
   } catch (error) {
     console.log(error);
   }

@@ -1,4 +1,4 @@
-import { ChartData } from "@/types";
+import { ChartData } from "@/types/dashboard.types";
 
 export const normalizeChartData = (data: ChartData) => {
   const categories = Object.keys(data?.website_visits);

@@ -1,4 +1,4 @@
-import { SummaryData } from "@/types";
+import { SummaryData } from "@/types/dashboard.types";
 import ArrowUp from "@/assets/svgs/arrow-up.svg";
 import ArrowDown from "@/assets/svgs/arrow-down.svg";
 
