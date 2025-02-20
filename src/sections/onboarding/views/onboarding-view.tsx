@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -8,13 +8,10 @@ import {
   FormControlLabel,
   Checkbox,
   Button,
-  Select,
-  MenuItem,
-  styled,
-  Paper,
   FormHelperText,
   FormControl,
-  InputLabel,
+  Autocomplete,
+  CircularProgress,
 } from "@mui/material";
 import { TextField } from "@mui/material";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -25,14 +22,12 @@ import dayjs from "dayjs";
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { StyledPaper } from "@/styles";
+import { getAllUser } from "@/api/users/usersApi";
+import { debounce } from "lodash";
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(3),
-  borderRadius: theme.spacing(2),
-  maxWidth: 600,
-  margin: "0 auto",
-  boxShadow: "0px 3px 5px rgba(0, 0, 0, 0.05)",
-}));
+// valid options for plan_type are "monthly", "yearly", "pay_as_you_go"
+// valid options for additins are "refundable", "on_demand", "negotiable"'
 
 // Define validation schema using Zod
 const offerSchema = z.object({
@@ -54,9 +49,7 @@ const offerSchema = z.object({
 
 type OfferFormData = z.infer<typeof offerSchema>;
 
-interface CreateOfferFormProps {}
-
-const CreateOfferForm: React.FC<CreateOfferFormProps> = () => {
+const CreateOfferForm = () => {
   const {
     control,
     handleSubmit,
@@ -68,7 +61,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = () => {
       refundable: false,
       onDemand: false,
       negotiable: false,
-      user: "Jason Momoa",
+      user: "",
       expiryDate: null,
       price: "",
     },
@@ -78,6 +71,28 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = () => {
     console.log("Form data submitted:", data);
     // Here you would send the data to your API
   };
+
+  const [users, setUsers] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // Function to fetch users with debounce
+  const fetchUsers = debounce(async (query: string) => {
+    if (query.trim().length > 0) {
+      // Ensure API calls even on the first input
+      setLoading(true);
+      try {
+        const data = await getAllUser();
+        const allNames = data?.data.map((user: { name: string }) => user.name);
+        setUsers(allNames.length ? allNames : ["No Result Found"]);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setUsers(["No Result Found"]);
+      }
+      setLoading(false);
+    } else {
+      setUsers([]); // Clear suggestions when input is empty
+    }
+  }, 500);
 
   return (
     <StyledPaper>
@@ -89,7 +104,9 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = () => {
           Send onboarding offer to new user
         </Typography>
 
-        <Typography variant="subtitle1" mt={3} mb={1}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }} />
+
+        <Typography variant="subtitle2" mt={3} mb={1}>
           Plan Type
         </Typography>
         <Controller
@@ -119,7 +136,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = () => {
           <FormHelperText error>{errors.planType.message}</FormHelperText>
         )}
 
-        <Typography variant="subtitle1" mt={3} mb={1}>
+        <Typography variant="subtitle2" mt={3} mb={1}>
           Additions
         </Typography>
         <Box display="flex" gap={2}>
@@ -173,32 +190,42 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = () => {
           />
         </Box>
 
-        <Typography variant="subtitle1" mt={3} mb={1}>
+        <Typography variant="subtitle2" mt={3} mb={1}>
           User
         </Typography>
         <Controller
           name="user"
           control={control}
           render={({ field }) => (
-            <FormControl fullWidth error={!!errors.user} size="small">
-              <InputLabel id="user-label">User</InputLabel>
-              <Select
-                {...field}
-                labelId="user-label"
-                variant="outlined"
-                label="User"
-              >
-                <MenuItem value="Jason Momoa">Jason Momoa</MenuItem>
-                <MenuItem value="Another User">Another User</MenuItem>
-              </Select>
-              {errors.user && (
-                <FormHelperText>{errors.user.message}</FormHelperText>
+            <Autocomplete
+              {...field}
+              freeSolo
+              options={users}
+              loading={loading}
+              onInputChange={(_, value) => {
+                fetchUsers(value);
+              }}
+              getOptionLabel={(option) => option}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  size="small"
+                  placeholder="Select User"
+                  error={!!errors.user}
+                  helperText={errors.user?.message}
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: <>{params.InputProps.endAdornment}</>,
+                  }}
+                />
               )}
-            </FormControl>
+              onChange={(_, value) => field.onChange(value)}
+            />
           )}
         />
 
-        <Typography variant="subtitle1" mt={3} mb={1}>
+        <Typography variant="subtitle2" mt={3} mb={1}>
           Expired
         </Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -208,7 +235,6 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = () => {
             render={({ field }) => (
               <FormControl fullWidth error={!!errors.expiryDate}>
                 <DatePicker
-                  label="Select Date"
                   value={field.value}
                   onChange={(date) => field.onChange(date)}
                   slotProps={{
@@ -227,7 +253,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = () => {
           />
         </LocalizationProvider>
 
-        <Typography variant="subtitle1" mt={3} mb={1}>
+        <Typography variant="subtitle2" mt={3} mb={1}>
           Price
         </Typography>
         <Controller
@@ -236,6 +262,7 @@ const CreateOfferForm: React.FC<CreateOfferFormProps> = () => {
           render={({ field }) => (
             <TextField
               {...field}
+              type="number"
               variant="outlined"
               size="small"
               fullWidth

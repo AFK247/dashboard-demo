@@ -1,4 +1,4 @@
-import { Select, styled, TextField } from "@mui/material";
+import { Paper, Select, styled, TextField } from "@mui/material";
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
   width: "100%",
@@ -40,4 +40,12 @@ export const StyledSelect = styled(Select)(({ theme }) => ({
   "& .MuiSelect-select": {
     padding: "12px 16px",
   },
+}));
+
+export const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  borderRadius: theme.spacing(2),
+  maxWidth: 600,
+  margin: "0 auto",
+  boxShadow: "0px 3px 5px rgba(0, 0, 0, 0.05)",
 }));

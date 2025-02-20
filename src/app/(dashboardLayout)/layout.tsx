@@ -25,8 +25,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           ml: { sm: `240px` },
           bgcolor: "#fff",
           color: "#000",
-          boxShadow: "none",
-          borderBottom: "1px solid #e0e0e0",
+          boxShadow: "0px 2px 4px rgba(97, 97, 97, 0.1)",
         }}
       >
         <Toolbar
