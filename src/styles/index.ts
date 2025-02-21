@@ -1,4 +1,6 @@
-import { Paper, Select, styled, TextField } from "@mui/material";
+import { ListItem, Paper, Select, styled, TextField } from "@mui/material";
+import Image from "next/image";
+import Link from "next/link";
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
   width: "100%",
@@ -49,3 +51,27 @@ export const StyledPaper = styled(Paper)(({ theme }) => ({
   margin: "0 auto",
   boxShadow: "0px 3px 5px rgba(0, 0, 0, 0.05)",
 }));
+
+// Styled components
+export const StyledListItem = styled(ListItem)({
+  padding: "8px 24px",
+  marginBottom: "4px",
+  "&:hover": {
+    backgroundColor: "rgba(0, 0, 0, 0.04)",
+  },
+});
+
+export const StyledLink = styled(Link)({
+  textDecoration: "none",
+  color: "inherit",
+  display: "flex",
+  alignItems: "center",
+  width: "100%",
+});
+
+export const StyledImage = styled(Image)({
+  width: "20px",
+  height: "20px",
+  marginRight: "12px",
+  opacity: 0.6,
+});

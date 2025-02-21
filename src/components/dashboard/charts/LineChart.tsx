@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-import { ChartSeries } from "@/types/dashboard.types";
+import { ChartSeries } from "@/types/dashboard-types";
 import { Box, Typography } from "@mui/material";
 import { StyledCard } from "@/components/ui/StyledCard";
 

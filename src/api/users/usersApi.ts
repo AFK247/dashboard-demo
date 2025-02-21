@@ -1,5 +1,5 @@
 import axiosPrivate from "@/helper/axiosIntance";
-import { Param } from "@/types/dashboard.types";
+import { Param } from "@/types/dashboard-types";
 import config from "config";
 
 export const getAllUser = async (params?: Param) => {

@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { Box, AppBar, Toolbar, IconButton, Typography } from "@mui/material";
+import { Box, AppBar, Toolbar, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import HomeIcon from "@mui/icons-material/Home";
 import Sidebar from "@/components/sidebar/Sidebar";
+import Profile from "@/assets/svgs/profile.svg";
+import Image from "next/image";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -46,7 +47,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <MenuIcon />
           </IconButton>
           <IconButton>
-            <HomeIcon />
+            <Image src={Profile} alt="profile" height={40} width={40} />
           </IconButton>
         </Toolbar>
       </AppBar>

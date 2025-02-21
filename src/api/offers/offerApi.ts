@@ -1,6 +1,6 @@
 import axiosPrivate from "@/helper/axiosIntance";
-import { Param } from "@/types/dashboard.types";
-import { TCreateOffer } from "@/types/onboarding.types";
+import { Param } from "@/types/dashboard-types";
+import { TCreateOffer } from "@/types/onboarding-types";
 import config from "config";
 import { toast } from "sonner";
 

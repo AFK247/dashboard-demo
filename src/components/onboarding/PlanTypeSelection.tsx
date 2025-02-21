@@ -1,4 +1,5 @@
-import { OfferCommonProps } from "@/types/onboarding.types";
+import { OfferCommonProps } from "@/types/onboarding-types";
+import { planTypes } from "@/utils/onboard-utils";
 import {
   Box,
   FormControlLabel,
@@ -7,12 +8,6 @@ import {
   Typography,
 } from "@mui/material";
 import { Controller } from "react-hook-form";
-
-const planTypes = [
-  { value: "pay_as_you_go", label: "Pay As You Go" },
-  { value: "monthly", label: "Monthly" },
-  { value: "yearly", label: "Yearly" },
-];
 
 export const PlanTypeSelection: React.FC<OfferCommonProps> = ({
   control,

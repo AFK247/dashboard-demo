@@ -1,4 +1,4 @@
-import { OfferCommonProps } from "@/types/onboarding.types";
+import { OfferCommonProps } from "@/types/onboarding-types";
 import { Box, FormControl, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";

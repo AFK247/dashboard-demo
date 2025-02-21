@@ -1,4 +1,4 @@
-import { OfferCommonProps } from "@/types/onboarding.types";
+import { OfferCommonProps } from "@/types/onboarding-types";
 import { Box, TextField, Typography } from "@mui/material";
 import { Controller } from "react-hook-form";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";

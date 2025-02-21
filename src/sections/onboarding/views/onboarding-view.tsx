@@ -9,7 +9,7 @@ import { AdditionSelection } from "@/components/onboarding/AdditionSelection";
 import { PlanTypeSelection } from "@/components/onboarding/PlanTypeSelection";
 import { PriceInput } from "@/components/onboarding/PriceInput";
 import { ExpiryDatePicker } from "@/components/onboarding/ExpiryDatePicker";
-import { OfferFormData } from "@/types/onboarding.types";
+import { OfferFormData } from "@/types/onboarding-types";
 import { offerSchema } from "@/schemas/offerSchema";
 import { UserAutocomplete } from "@/components/onboarding/UserAutocomplete";
 

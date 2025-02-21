@@ -16,7 +16,7 @@ import {
   getDashboardStats,
   getDashboardSummary,
 } from "@/api/dashboard/dashboardApi";
-import { NormalizedSummaryData } from "@/types/dashboard.types";
+import { NormalizedSummaryData } from "@/types/dashboard-types";
 import SummaryCard from "@/components/dashboard/SummaryCard";
 import {
   filterOptions,

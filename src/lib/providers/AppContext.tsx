@@ -1,5 +1,5 @@
 "use client";
-import { ChartData, SummaryData, TOfferList } from "@/types/dashboard.types";
+import { ChartData, SummaryData, TOfferList } from "@/types/dashboard-types";
 import React, {
   createContext,
   useState,

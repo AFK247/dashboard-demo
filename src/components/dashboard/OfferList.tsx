@@ -20,7 +20,7 @@ import {
   TCachedTableData,
   TOfferList,
   TPaginationData,
-} from "@/types/dashboard.types";
+} from "@/types/dashboard-types";
 import { StyledCard } from "../ui/StyledCard";
 import { StyledSelect, StyledTextField } from "@/styles";
 import { getOfferList } from "@/api/offers/offerApi";

@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, CardContent, Typography } from "@mui/material";
 import { StyledCard } from "../ui/StyledCard";
-import { NormalizedSummaryData } from "@/types/dashboard.types";
+import { NormalizedSummaryData } from "@/types/dashboard-types";
 import Image from "next/image";
 
 interface StatCardProps {

@@ -1,4 +1,5 @@
-import { OfferCommonProps } from "@/types/onboarding.types";
+import { OfferCommonProps } from "@/types/onboarding-types";
+import { additionOptions, additionValues } from "@/utils/onboard-utils";
 import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import { Controller } from "react-hook-form";
 
@@ -6,14 +7,6 @@ export const AdditionSelection: React.FC<OfferCommonProps> = ({
   control,
   label,
 }) => {
-  const additionOptions = [
-    { label: "Refundable", value: "refundable" },
-    { label: "On Demand", value: "on_demand" },
-    { label: "Negotiable", value: "negotiable" },
-  ];
-
-  const additionValues = ["refundable", "on_demand", "negotiable"] as const;
-
   return (
     <Box>
       <Typography variant="subtitle2" mt={2} mb={1}>

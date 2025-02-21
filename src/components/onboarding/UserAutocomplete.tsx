@@ -1,5 +1,5 @@
 import { getAllUser } from "@/api/users/usersApi";
-import { UserAutocompleteProps, UserOption } from "@/types/onboarding.types";
+import { UserAutocompleteProps, UserOption } from "@/types/onboarding-types";
 import { Autocomplete, Box, TextField, Typography } from "@mui/material";
 import { debounce } from "lodash";
 import { useState } from "react";
