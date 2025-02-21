@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { storeToken } from "@/services/auth-service";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -85,9 +86,9 @@ export default function SignIn() {
     const res = await loginUser(payload);
     setLoading(false);
     if (res?.token) {
-      localStorage.setItem("token", res.token);
-      toast.success("Login successful");
+      storeToken(res.token);
       setToken(res.token);
+      toast.success("Login successful");
       router.push("/");
     } else {
       toast.error("Invalid credentials");

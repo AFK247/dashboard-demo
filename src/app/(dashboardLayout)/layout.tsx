@@ -6,6 +6,7 @@ import Sidebar from "@/components/sidebar/Sidebar";
 import Profile from "@/assets/svgs/profile.svg";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { clearToken } from "@/services/auth-service";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -20,7 +21,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    clearToken();
     router.push("/login");
   };
 
