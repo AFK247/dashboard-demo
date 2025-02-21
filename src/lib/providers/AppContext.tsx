@@ -1,5 +1,5 @@
 "use client";
-import { ChartData, SummaryData } from "@/types/dashboard.types";
+import { ChartData, SummaryData, TOfferList } from "@/types/dashboard.types";
 import React, {
   createContext,
   useState,
@@ -15,6 +15,8 @@ interface AppContextProps {
   setSummaryData: React.Dispatch<React.SetStateAction<SummaryData | null>>;
   stats: ChartData | null;
   setStats: React.Dispatch<React.SetStateAction<ChartData | null>>;
+  offerList: TOfferList[];
+  setOfferList: React.Dispatch<React.SetStateAction<TOfferList[]>>;
 }
 
 // Create context with undefined as default and explicit typing
@@ -24,6 +26,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
   const [stats, setStats] = useState<ChartData | null>(null);
+  const [offerList, setOfferList] = useState<TOfferList[]>([]);
 
   useEffect(() => {
     const localToken = localStorage.getItem("token");
@@ -39,6 +42,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setSummaryData,
     stats,
     setStats,
+    offerList,
+    setOfferList,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

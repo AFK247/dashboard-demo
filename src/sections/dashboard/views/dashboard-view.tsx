@@ -16,10 +16,13 @@ import {
   getDashboardStats,
   getDashboardSummary,
 } from "@/api/dashboard/dashboardApi";
-import { normalizeChartData } from "@/utils/normalizeChartData";
-import { normalizedSummaryData } from "@/utils/normalizeSummaryData";
-import { ChartSeries, NormalizedSummaryData } from "@/types/dashboard.types";
+import { NormalizedSummaryData } from "@/types/dashboard.types";
 import SummaryCard from "@/components/dashboard/SummaryCard";
+import {
+  filterOptions,
+  normalizeChartData,
+  normalizedSummaryData,
+} from "@/utils/dashboard-utils";
 
 const Dashboard = () => {
   const { summaryData, setSummaryData, stats, setStats } = useAppContext();
@@ -29,11 +32,15 @@ const Dashboard = () => {
   });
 
   const fetchDashboardData = async () => {
-    const dashboardSummary = await getDashboardSummary(query);
-    setSummaryData(dashboardSummary);
+    if (!summaryData) {
+      const dashboardSummary = await getDashboardSummary(query);
+      setSummaryData(dashboardSummary);
+    }
 
-    const dashboardStats = await getDashboardStats(query);
-    setStats(dashboardStats);
+    if (!stats) {
+      const dashboardStats = await getDashboardStats(query);
+      setStats(dashboardStats);
+    }
   };
 
   useEffect(() => {
@@ -48,24 +55,12 @@ const Dashboard = () => {
     setQuery({ filter: newFilter });
   };
 
-  let barChartCategory: string[] = [];
-  let barChartSeries: ChartSeries[] = [];
-  let lineChartCategory: string[] = [];
-  let lineChartSeries: ChartSeries[] = [];
-
-  if (stats) {
-    barChartCategory = normalizeChartData(stats).barChartCategory;
-    barChartSeries = normalizeChartData(stats).barChartSeries;
-    lineChartCategory = normalizeChartData(stats).lineChartCategory;
-    lineChartSeries = normalizeChartData(stats).lineChartSeries;
-  }
-
-  const filterOptions = [
-    { value: "this-month", label: "This Month" },
-    { value: "last-month", label: "Last Month" },
-    { value: "this-week", label: "This Week" },
-    { value: "last-week", label: "Last Week" },
-  ];
+  const {
+    barChartCategory,
+    barChartSeries,
+    lineChartCategory,
+    lineChartSeries,
+  } = normalizeChartData(stats);
 
   return (
     <Box>

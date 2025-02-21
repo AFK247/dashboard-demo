@@ -5,7 +5,7 @@ export interface NormalizedSummaryData {
   icon: string;
 }
 
-export interface Row {
+export interface TOfferList {
   id: number;
   user_name: string;
   phone: string;
@@ -82,4 +82,15 @@ export interface OfferData {
   status: string;
   type: string;
   price: number;
+}
+
+export interface TPaginationData {
+  last_page: number;
+  per_page: number;
+  total: number;
+  data: TOfferList[];
+}
+
+export interface TCachedTableData {
+  [key: string]: TOfferList[]; // key will be "page_pageSize"
 }

@@ -16,44 +16,30 @@ import { DataGrid, GridPaginationModel } from "@mui/x-data-grid";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
 import SearchIcon from "@mui/icons-material/Search";
-import { OfferData, Row } from "@/types/dashboard.types";
+import {
+  TCachedTableData,
+  TOfferList,
+  TPaginationData,
+} from "@/types/dashboard.types";
 import { StyledCard } from "../ui/StyledCard";
 import { StyledSelect, StyledTextField } from "@/styles";
-import { useAppContext } from "@/lib/providers/AppContext";
 import { getOfferList } from "@/api/offers/offerApi";
-
-interface PaginationData {
-  current_page: number;
-  from: number;
-  last_page: number;
-  per_page: number;
-  to: number;
-  total: number;
-  data: Row[];
-}
-
-interface CachedData {
-  [key: string]: Row[]; // key will be "page_pageSize"
-}
+import { capitalizeFirstLetter } from "@/utils/dashboard-utils";
 
 const OfferList: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [tabValue, setTabValue] = useState(0);
-  const [filteredData, setFilteredData] = useState<Row[]>([]);
-  const [paginationData, setPaginationData] = useState<PaginationData>({
-    current_page: 1,
-    from: 1,
+  const [paginationData, setPaginationData] = useState<TPaginationData>({
     last_page: 1,
     per_page: 5,
-    to: 5,
     total: 0,
     data: [],
   });
   const [loading, setLoading] = useState(false);
-  const [cachedData, setCachedData] = useState<CachedData>({});
-
-  const { summaryData, setSummaryData, stats, setStats } = useAppContext();
+  const [cachedData, setCachedData] = useState<TCachedTableData>({});
+  const [originalData, setOriginalData] = useState<TOfferList[]>([]);
+  const [filteredData, setFilteredData] = useState<TOfferList[]>([]);
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -70,30 +56,35 @@ const OfferList: React.FC = () => {
 
     // Check if data is already in cache
     if (cachedData[cacheKey]) {
-      setFilteredData(cachedData[cacheKey]);
+      setOriginalData(cachedData[cacheKey]);
       return;
     }
 
     setLoading(true);
-    const response = await getOfferList({
-      page: paginationModel.page + 1,
-      per_page: paginationModel.pageSize,
-    });
+    try {
+      const response = await getOfferList({
+        page: paginationModel.page + 1,
+        per_page: paginationModel.pageSize,
+      });
 
-    if (response) {
-      setPaginationData(response?.meta);
-      setFilteredData(response.data);
+      if (response) {
+        setPaginationData(response?.meta);
+        setOriginalData(response.data);
 
-      // Cache the new data
-      setCachedData((prev) => ({
-        ...prev,
-        [cacheKey]: response.data,
-      }));
+        // Cache the new data
+        setCachedData((prev) => ({
+          ...prev,
+          [cacheKey]: response.data,
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
+    setLoading(false);
   };
 
   // Filter function to handle local filtering
-  const filterRows = (rows: Row[]) => {
+  const filterRows = (rows: TOfferList[]) => {
     return rows.filter((row) => {
       // Filter by tab (All or Accepted)
       if (tabValue === 1 && row.status !== "accepted") return false;
@@ -122,21 +113,26 @@ const OfferList: React.FC = () => {
     });
   };
 
-  // Apply filters whenever search, filter type, or tab changes
+  // Apply filters whenever search, filter type, tab, or original data changes
   useEffect(() => {
-    const filtered = filterRows(filteredData);
+    const filtered = filterRows(originalData);
     setFilteredData(filtered);
-  }, [searchQuery, filterType, tabValue]);
+  }, [searchQuery, filterType, tabValue, originalData]);
 
   // Fetch data when pagination changes
   useEffect(() => {
     fetchTableData();
   }, [paginationModel]);
 
-  // Clear cache when filter type or tab changes
-  useEffect(() => {
-    setCachedData({});
-  }, [filterType, tabValue]);
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
+  const handlePaginationModelChange = (
+    newPaginationModel: GridPaginationModel
+  ) => {
+    setPaginationModel(newPaginationModel);
+  };
 
   const columns = [
     {
@@ -155,14 +151,19 @@ const OfferList: React.FC = () => {
     { field: "phone", headerName: "Phone number", flex: 1 },
     { field: "company", headerName: "Company", flex: 1 },
     { field: "jobTitle", headerName: "Job Title", flex: 1 },
-    { field: "type", headerName: "Type", flex: 1 },
+    {
+      field: "type",
+      headerName: "Type",
+      flex: 1,
+      renderCell: (params: any) => capitalizeFirstLetter(params.value),
+    },
     {
       field: "status",
       headerName: "Status",
       flex: 1,
       renderCell: (params: any) => (
         <Chip
-          label={params.value}
+          label={capitalizeFirstLetter(params.value)}
           color={
             params.value === "accepted"
               ? "success"
@@ -193,16 +194,12 @@ const OfferList: React.FC = () => {
     },
   ];
 
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
-    setPaginationModel({ ...paginationModel, page: 0 });
-  };
-
-  const handlePaginationModelChange = (
-    newPaginationModel: GridPaginationModel
-  ) => {
-    setPaginationModel(newPaginationModel);
-  };
+  const filterList = [
+    { value: "all", label: "All" },
+    { value: "pay_as_you_go", label: "Pay As You Go" },
+    { value: "monthly", label: "Monthly" },
+    { value: "yearly", label: "Yearly" },
+  ];
 
   return (
     <StyledCard sx={{ p: 1, mt: 4 }}>
@@ -244,14 +241,16 @@ const OfferList: React.FC = () => {
             setPaginationModel({ ...paginationModel, page: 0 });
           }}
         >
-          <MenuItem value="all">All</MenuItem>
-          <MenuItem value="Monthly">Monthly</MenuItem>
-          <MenuItem value="Yearly">Yearly</MenuItem>
-          <MenuItem value="Pay As You Go">Pay As You Go</MenuItem>
+          {filterList.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
         </StyledSelect>
       </Box>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <DataGrid
+          rowHeight={60}
           rows={filteredData}
           columns={columns}
           pageSizeOptions={[5, 10, 25]}
@@ -263,6 +262,9 @@ const OfferList: React.FC = () => {
           loading={loading}
           disableRowSelectionOnClick
           getRowId={(row) => row.id || Math.random()}
+          sx={{
+            height: 430,
+          }}
         />
       </Paper>
     </StyledCard>
