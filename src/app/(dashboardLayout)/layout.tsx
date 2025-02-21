@@ -1,20 +1,27 @@
 "use client";
 import React, { useState } from "react";
-import { Box, AppBar, Toolbar, IconButton } from "@mui/material";
+import { Box, AppBar, Toolbar, IconButton, Button } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Sidebar from "@/components/sidebar/Sidebar";
 import Profile from "@/assets/svgs/profile.svg";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
   };
 
   return (
@@ -46,6 +53,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           >
             <MenuIcon />
           </IconButton>
+
+          <Button
+            onClick={handleLogout}
+            size="small"
+            color="error"
+            variant="outlined"
+          >
+            Logout
+          </Button>
           <IconButton>
             <Image src={Profile} alt="profile" height={40} width={40} />
           </IconButton>
@@ -60,7 +76,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { sm: `calc(100% - 240px)` },
+          width: { sm: `calc(100% - 280px)` },
         }}
       >
         <Toolbar />

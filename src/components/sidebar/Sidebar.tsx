@@ -95,7 +95,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   return (
     <Box
       component="nav"
-      sx={{ width: { sm: 240 }, flexShrink: { sm: 0 } }}
+      sx={{ width: { sm: 280 }, flexShrink: { sm: 0 } }}
       aria-label="mailbox folders"
     >
       {/* Mobile Drawer */}
@@ -110,7 +110,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           display: { xs: "block", sm: "none" },
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
-            width: 240,
+            width: 280,
             backgroundColor: "#ffffff",
           },
         }}
@@ -125,7 +125,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           display: { xs: "none", sm: "block" },
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
-            width: 240,
+            width: 280,
             borderRight: "none",
             backgroundColor: "#ffffff",
           },

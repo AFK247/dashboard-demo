@@ -16,7 +16,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
             <AppProvider>
               {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
               <CssBaseline />
-              <Toaster position="top-right" richColors />
+              <Toaster position="top-center" richColors />
               {props.children}
             </AppProvider>
           </ThemeProvider>

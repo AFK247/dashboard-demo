@@ -17,6 +17,7 @@ import { styled } from "@mui/material/styles";
 import { loginUser } from "@/api/auth/authApi";
 import { useAppContext } from "@/lib/providers/AppContext";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -63,6 +64,7 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 export default function SignIn() {
   const router = useRouter();
   const { setToken } = useAppContext();
+  const [loading, setLoading] = React.useState(false);
 
   const handleSignIn = async (event: any) => {
     event.preventDefault();
@@ -76,13 +78,16 @@ export default function SignIn() {
       password: "password123",
     };
 
+    setLoading(true);
     const res = await loginUser(payload);
+    setLoading(false);
     if (res?.token) {
       localStorage.setItem("token", res.token);
+      toast.success("Login successful");
       setToken(res.token);
       router.push("/");
     } else {
-      alert("Invalid credentials");
+      toast.error("Invalid credentials");
     }
   };
 
@@ -143,8 +148,13 @@ export default function SignIn() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <Button type="submit" fullWidth variant="contained">
-              Sign in
+            <Button
+              disabled={loading}
+              type="submit"
+              fullWidth
+              variant="contained"
+            >
+              {loading ? "Signing In..." : "Sign in"}
             </Button>
             <Link
               component="button"
