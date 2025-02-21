@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,8 @@ import { offerSchema } from "@/schemas/offerSchema";
 import { UserAutocomplete } from "@/components/onboarding/UserAutocomplete";
 
 const CreateOfferForm: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+
   const {
     control,
     handleSubmit,
@@ -40,7 +42,9 @@ const CreateOfferForm: React.FC = () => {
       expired: data.expired?.format("YYYY-MM-DD"),
     };
 
+    setLoading(true);
     await createOffer(transformedData);
+    setLoading(false);
   };
 
   return (
@@ -74,6 +78,7 @@ const CreateOfferForm: React.FC = () => {
         <PriceInput control={control} label="Price" errors={errors} />
 
         <Button
+          disabled={loading}
           type="submit"
           variant="contained"
           color="primary"
