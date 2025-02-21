@@ -18,6 +18,8 @@ import { loginUser } from "@/api/auth/authApi";
 import { useAppContext } from "@/lib/providers/AppContext";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { IconButton, InputAdornment } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -65,6 +67,7 @@ export default function SignIn() {
   const router = useRouter();
   const { setToken } = useAppContext();
   const [loading, setLoading] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const handleSignIn = async (event: any) => {
     event.preventDefault();
@@ -74,8 +77,8 @@ export default function SignIn() {
     const password = formData.password.value;
 
     const payload = {
-      email: "test@example.com",
-      password: "password123",
+      email,
+      password,
     };
 
     setLoading(true);
@@ -117,6 +120,7 @@ export default function SignIn() {
             <FormControl>
               <FormLabel htmlFor="email">Email</FormLabel>
               <TextField
+                defaultValue="test@example.com"
                 type="email"
                 name="email"
                 placeholder="your@email.com"
@@ -132,9 +136,10 @@ export default function SignIn() {
             <FormControl>
               <FormLabel htmlFor="password">Password</FormLabel>
               <TextField
+                defaultValue="password123"
                 name="password"
                 placeholder="••••••"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 autoComplete="current-password"
                 required
@@ -142,6 +147,21 @@ export default function SignIn() {
                 variant="outlined"
                 size="small"
                 sx={{ mt: 1 }}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
               />
             </FormControl>
             <FormControlLabel
